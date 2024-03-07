@@ -4,7 +4,10 @@
     "dependencies": {
         "device": "*",
         "multiplayer": "*",
-        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2"
+        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2",
+        "controller": "*",
+        "Color Fading": "github:jwunderl/pxt-color#v0.2.3",
+        "darts": "*"
     },
     "files": [
         "main.blocks",

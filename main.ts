@@ -1,51 +1,155 @@
+namespace SpriteKind {
+    export const weapons = SpriteKind.create()
+}
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     you.setVelocity(0, -50)
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    shot = sprites.create(img`
+    shot = sprites.createProjectileFromSprite(img`
+        . . . . . . . . . . . . . . . . 
         . . . . . . . f . . . . . . . . 
-        . . . . . . f f f . . . . . . . 
+        . . . . . . f 1 f . . . . . . . 
         . . . . . f f f f f . . . . . . 
         . . . . f f f f f f f . . . . . 
         . . . . . . . f . . . . . . . . 
-        . . . . . . . f . . . . . . . . 
-        . . . . . . . f . . . . . . . . 
-        . . . . . . . f . . . . . . . . 
-        . . . . . . . f . . . . . . . . 
-        . . . . . . . f . . . . . . . . 
+        . . . . . . . 8 . . . . . . . . 
+        . . . . . . . 8 . . . . . . . . 
+        . . . . . . . 8 . . . . . . . . 
         . . . . . . . f . . . . . . . . 
         . . . . . . f f f . . . . . . . 
         . . . . . f . f . f . . . . . . 
-        . . . . f . . 2 . . f . . . . . 
-        . . . . . . . 2 . . . . . . . . 
+        . . . . 2 . . 2 . . 2 . . . . . 
         . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Player)
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, you, 0, -50)
+})
+info.onCountdownEnd(function () {
+    if (info.player1.hasLife()) {
+        game.showLongText("Do you want to continue?", DialogLayout.Full)
+    }
+    tiles.setCurrentTilemap(list2._pickRandom())
+    controller.moveSprite(you)
+    cucui2 = sprites.create(img`
+        . . . b 6 b . . . . . . . . . . 
+        . . . . b 6 b . . . . . . . . . 
+        . . . . . c b . . . . . . . . . 
+        . . . . b b b b b b . . . . . . 
+        . . . b 5 5 5 5 5 b b . . . . . 
+        . . f d 6 6 f 2 d 5 b b . . . . 
+        . . c 4 d 5 f f 2 5 5 b . . . . 
+        . . 4 4 d d b f d 5 5 b . . . . 
+        b 4 4 4 4 4 5 5 5 d b b d d d b 
+        . b 4 4 4 4 4 5 6 b 5 5 6 d b b 
+        . . b 6 5 5 5 5 d 5 6 5 5 c d b 
+        . b 5 6 6 5 5 5 b 5 6 d c d d c 
+        . b 5 5 6 5 5 5 5 b c c d d b c 
+        . b d 6 5 5 6 5 d d d d d d c . 
+        . . b b 5 5 6 d d d d d b c . . 
+        . . . b b c c c c c c c c . . . 
+        `, SpriteKind.Enemy)
+    cucui2.follow(you, 50)
+    scene.cameraFollowSprite(you)
+    tiles.placeOnTile(you, tiles.getTileLocation(1, 12))
+    you.ay = 200
 })
 statusbars.onZero(StatusBarKind.Health, function (status) {
     game.gameOver(false)
 })
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava1, function (sprite, location) {
-    sprites.destroy(you, effects.clouds, 500)
-})
-function doSomething () {
-    if (you.isHittingTile(CollisionDirection.Top)) {
-        sprites.destroy(you, effects.clouds, 500)
-    }
-}
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Player, function (sprite, otherSprite) {
     statusbar.value += -1
     scene.cameraShake(4, 500)
 })
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardWater, function (sprite, location) {
-    sprites.destroy(you, effects.clouds, 500)
+function doSomething2 (ups: any[], downs: any[]) {
+    powerups = [img`
+        . . . . . . . 6 . . . . . . . . 
+        . . . . . . 8 6 6 . . . 6 8 . . 
+        . . . e e e 8 8 6 6 . 6 7 8 . . 
+        . . e 2 2 2 2 e 8 6 6 7 6 . . . 
+        . e 2 2 4 4 2 7 7 7 7 7 8 6 . . 
+        . e 2 4 4 2 6 7 7 7 6 7 6 8 8 . 
+        e 2 4 5 2 2 6 7 7 6 2 7 7 6 . . 
+        e 2 4 4 2 2 6 7 6 2 2 6 7 7 6 . 
+        e 2 4 2 2 2 6 6 2 2 2 e 7 7 6 . 
+        e 2 4 2 2 4 2 2 2 4 2 2 e 7 6 . 
+        e 2 4 2 2 2 2 2 2 2 2 2 e c 6 . 
+        e 2 2 2 2 2 2 2 4 e 2 e e c . . 
+        e e 2 e 2 2 4 2 2 e e e c . . . 
+        e e e e 2 e 2 2 e e e c . . . . 
+        e e e 2 e e c e c c c . . . . . 
+        . c c c c c c c . . . . . . . . 
+        `, img`
+        . . . . . . . . . . b b b . . . 
+        . . . . . . . . b e e 3 3 b . . 
+        . . . . . . b b e 3 2 e 3 a . . 
+        . . . . b b 3 9 e 2 2 e 3 9 a . 
+        . . b b 3 3 2 3 3 e e 3 3 3 a . 
+        b b 3 2 3 8 3 3 3 3 3 3 8 3 3 a 
+        b 3 9 3 d d d d 3 9 3 3 2 d d a 
+        b b b b b b b 3 d d d d d d 3 a 
+        b d 5 5 5 5 d b b b a a a a a a 
+        b 3 d d 5 5 5 5 5 5 5 d d d d a 
+        b 3 3 3 3 3 3 d 5 5 5 d d d d a 
+        b 3 d 5 5 5 3 3 3 3 3 3 b b b a 
+        b b b 3 d 5 5 5 5 5 5 5 d d b a 
+        . . . b b b 3 d 5 5 5 5 d d 3 a 
+        . . . . . . b b b b 3 d d d b a 
+        . . . . . . . . . . b b b a a . 
+        `]
+    powerdowns = [img`
+        4 4 4 . . 4 4 4 4 4 . . . . . . 
+        4 5 5 4 4 5 5 5 5 5 4 4 . . . . 
+        b 4 5 5 1 5 1 1 1 5 5 5 4 . . . 
+        . b 5 5 5 5 1 1 5 5 1 1 5 4 . . 
+        . b d 5 5 5 5 5 5 5 5 1 1 5 4 . 
+        b 4 5 5 5 5 5 5 5 5 5 5 1 5 4 . 
+        c d 5 5 5 5 5 5 5 5 5 5 5 5 5 4 
+        c d 4 5 5 5 5 5 5 5 5 5 5 1 5 4 
+        c 4 5 5 5 d 5 5 5 5 5 5 5 5 5 4 
+        c 4 d 5 4 5 d 5 5 5 5 5 5 5 5 4 
+        . c 4 5 5 5 5 d d d 5 5 5 5 5 b 
+        . c 4 d 5 4 5 d 4 4 d 5 5 5 4 c 
+        . . c 4 4 d 4 4 4 4 4 d d 5 d c 
+        . . . c 4 4 4 4 4 4 4 4 5 5 5 4 
+        . . . . c c b 4 4 4 b b 4 5 4 4 
+        . . . . . . c c c c c c b b 4 . 
+        `, img`
+        . . . . . . . e e e e . . . . . 
+        . . . . . e e 4 5 5 5 e e . . . 
+        . . . . e 4 5 6 2 2 7 6 6 e . . 
+        . . . e 5 6 6 7 2 2 6 4 4 4 e . 
+        . . e 5 2 2 7 6 6 4 5 5 5 5 4 . 
+        . e 5 6 2 2 8 8 5 5 5 5 5 4 5 4 
+        . e 5 6 7 7 8 5 4 5 4 5 5 5 5 4 
+        e 4 5 8 6 6 5 5 5 5 5 5 4 5 5 4 
+        e 5 c e 8 5 5 5 4 5 5 5 5 5 5 4 
+        e 5 c c e 5 4 5 5 5 4 5 5 5 e . 
+        e 5 c c 5 5 5 5 5 5 5 5 4 e . . 
+        e 5 e c 5 4 5 4 5 5 5 e e . . . 
+        e 5 e e 5 5 5 5 5 4 e . . . . . 
+        4 5 4 e 5 5 5 5 e e . . . . . . 
+        . 4 5 4 5 5 4 e . . . . . . . . 
+        . . 4 4 e e e . . . . . . . . . 
+        `]
+    for (let index = 0; index < 4; index++) {
+        goods = powerups._pickRandom()
+    }
+    for (let index = 0; index < 4; index++) {
+        bads = powerdowns._pickRandom()
+    }
+}
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    sprites.destroy(cucui)
+    info.changeScoreBy(1)
 })
-scene.onOverlapTile(SpriteKind.Player, sprites.castle.tileDarkGrass2, function (sprite, location) {
-    sprites.destroy(you, effects.clouds, 500)
-})
-scene.onOverlapTile(SpriteKind.Player, sprites.builtin.oceanSand2, function (sprite, location) {
-    sprites.destroy(you, effects.clouds, 500)
-})
+let bads: Image = null
+let goods: Image = null
+let powerdowns: Image[] = []
+let powerups: Image[] = []
+let cucui2: Sprite = null
 let shot: Sprite = null
+let cucui: Sprite = null
+let list2: tiles.TileMapData[] = []
 let you: Sprite = null
 let statusbar: StatusBarSprite = null
 game.showLongText("DONT LET THE CUCUI KILL U", DialogLayout.Center)
@@ -192,10 +296,11 @@ you = sprites.create(img`
     . . . . f f . . f f . . . . 
     `, SpriteKind.Player)
 let list1 = [tilemap`level2`, tilemap`level3`]
-let list2 = [tilemap`level4`, tilemap`level5`]
+list2 = [tilemap`level4`, tilemap`level5`]
 tiles.setCurrentTilemap(list1._pickRandom())
+info.startCountdown(60)
 controller.moveSprite(you)
-let cucui = sprites.create(img`
+cucui = sprites.create(img`
     . . f f f . . . . . . . . . . . 
     f f f c c . . . . . . . . f f f 
     f f c c c . c c . . . f c 8 8 c 
@@ -213,8 +318,11 @@ let cucui = sprites.create(img`
     . . . f f f f f f f . . . . . . 
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.Enemy)
-cucui.follow(you, 50)
+cucui.follow(you, 75)
 tiles.placeOnTile(cucui, tiles.getTileLocation(15, 6))
 scene.cameraFollowSprite(you)
 tiles.placeOnTile(you, tiles.getTileLocation(1, 12))
 you.ay = 200
+game.onUpdateInterval(5000, function () {
+	
+})
